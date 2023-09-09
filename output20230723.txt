@@ -1,0 +1,1132 @@
+nohup: ignoring input
+07/23 17:20:50 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.7.5 (default, Jun 20 2023, 09:52:36) [GCC 7.5.0]
+    CUDA available: True
+    numpy_random_seed: 1913835919
+    GPU 0: NVIDIA RTX A4000
+    CUDA_HOME: /usr/local/cuda
+    NVCC: Cuda compilation tools, release 11.3, V11.3.109
+    GCC: gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+    PyTorch: 1.10.2+cu113
+    PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.0 Product Build 20191122 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.2.3 (Git Hash 7336ca9f055cf1bfa13efb658fe15dc9b41f0740)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX512
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.2
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.10.2, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+    TorchVision: 0.11.3+cu113
+    OpenCV: 4.5.4
+    MMEngine: 0.8.2
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 1913835919
+    Distributed launcher: none
+    Distributed training: False
+    GPU number: 1
+------------------------------------------------------------
+
+07/23 17:20:52 - mmengine - INFO - Config:
+default_scope = 'mmdet'
+default_hooks = dict(
+    timer=dict(type='IterTimerHook'),
+    logger=dict(type='LoggerHook', interval=50),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    checkpoint=dict(type='CheckpointHook', interval=10, max_keep_ckpts=3),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    visualization=dict(type='DetVisualizationHook'))
+env_cfg = dict(
+    cudnn_benchmark=False,
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
+    dist_cfg=dict(backend='nccl'))
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    type='DetLocalVisualizer',
+    vis_backends=[
+        dict(type='LocalVisBackend'),
+    ],
+    name='visualizer')
+log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
+log_level = 'INFO'
+load_from = None
+resume = False
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=300,
+    val_interval=10,
+    dynamic_intervals=[
+        (
+            280,
+            1,
+        ),
+    ])
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+param_scheduler = [
+    dict(
+        type='LinearLR', start_factor=1e-05, by_epoch=False, begin=0,
+        end=1000),
+    dict(
+        type='CosineAnnealingLR',
+        eta_min=0.0002,
+        begin=150,
+        end=300,
+        T_max=150,
+        by_epoch=True,
+        convert_to_iter_based=True),
+]
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='AdamW', lr=0.004, weight_decay=0.05),
+    paramwise_cfg=dict(
+        norm_decay_mult=0, bias_decay_mult=0, bypass_duplicate=True))
+auto_scale_lr = dict(enable=False, base_batch_size=16)
+dataset_type = 'CocoDataset'
+data_root = '/gemini/code/mmdetection/data/coco/'
+backend_args = None
+train_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=None),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        type='CachedMosaic',
+        img_scale=(
+            640,
+            640,
+        ),
+        pad_val=114.0,
+        max_cached_images=20,
+        random_pop=False),
+    dict(
+        type='RandomResize',
+        scale=(
+            1280,
+            1280,
+        ),
+        ratio_range=(
+            0.5,
+            2.0,
+        ),
+        keep_ratio=True),
+    dict(type='RandomCrop', crop_size=(
+        640,
+        640,
+    )),
+    dict(type='YOLOXHSVRandomAug'),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='Pad', size=(
+        640,
+        640,
+    ), pad_val=dict(img=(
+        114,
+        114,
+        114,
+    ))),
+    dict(
+        type='CachedMixUp',
+        img_scale=(
+            640,
+            640,
+        ),
+        ratio_range=(
+            1.0,
+            1.0,
+        ),
+        max_cached_images=10,
+        random_pop=False,
+        pad_val=(
+            114,
+            114,
+            114,
+        ),
+        prob=0.5),
+    dict(type='PackDetInputs'),
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=None),
+    dict(type='Resize', scale=(
+        640,
+        640,
+    ), keep_ratio=True),
+    dict(type='Pad', size=(
+        640,
+        640,
+    ), pad_val=dict(img=(
+        114,
+        114,
+        114,
+    ))),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        type='PackDetInputs',
+        meta_keys=(
+            'img_id',
+            'img_path',
+            'ori_shape',
+            'img_shape',
+            'scale_factor',
+        )),
+]
+train_dataloader = dict(
+    batch_size=12,
+    num_workers=10,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    batch_sampler=None,
+    dataset=dict(
+        type='CocoDataset',
+        data_root='/gemini/code/mmdetection/data/coco/',
+        ann_file='annotations/instances_train2017.json',
+        data_prefix=dict(img='train2017/'),
+        filter_cfg=dict(filter_empty_gt=True, min_size=32),
+        pipeline=[
+            dict(type='LoadImageFromFile', backend_args=None),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                type='CachedMosaic',
+                img_scale=(
+                    640,
+                    640,
+                ),
+                pad_val=114.0,
+                max_cached_images=20,
+                random_pop=False),
+            dict(
+                type='RandomResize',
+                scale=(
+                    1280,
+                    1280,
+                ),
+                ratio_range=(
+                    0.5,
+                    2.0,
+                ),
+                keep_ratio=True),
+            dict(type='RandomCrop', crop_size=(
+                640,
+                640,
+            )),
+            dict(type='YOLOXHSVRandomAug'),
+            dict(type='RandomFlip', prob=0.5),
+            dict(
+                type='Pad',
+                size=(
+                    640,
+                    640,
+                ),
+                pad_val=dict(img=(
+                    114,
+                    114,
+                    114,
+                ))),
+            dict(
+                type='CachedMixUp',
+                img_scale=(
+                    640,
+                    640,
+                ),
+                ratio_range=(
+                    1.0,
+                    1.0,
+                ),
+                max_cached_images=10,
+                random_pop=False,
+                pad_val=(
+                    114,
+                    114,
+                    114,
+                ),
+                prob=0.5),
+            dict(type='PackDetInputs'),
+        ],
+        backend_args=None),
+    pin_memory=True)
+val_dataloader = dict(
+    batch_size=5,
+    num_workers=10,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='CocoDataset',
+        data_root='/gemini/code/mmdetection/data/coco/',
+        ann_file='annotations/instances_val2017.json',
+        data_prefix=dict(img='val2017/'),
+        test_mode=True,
+        pipeline=[
+            dict(type='LoadImageFromFile', backend_args=None),
+            dict(type='Resize', scale=(
+                640,
+                640,
+            ), keep_ratio=True),
+            dict(
+                type='Pad',
+                size=(
+                    640,
+                    640,
+                ),
+                pad_val=dict(img=(
+                    114,
+                    114,
+                    114,
+                ))),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                type='PackDetInputs',
+                meta_keys=(
+                    'img_id',
+                    'img_path',
+                    'ori_shape',
+                    'img_shape',
+                    'scale_factor',
+                )),
+        ],
+        backend_args=None))
+test_dataloader = dict(
+    batch_size=5,
+    num_workers=10,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='CocoDataset',
+        data_root='/gemini/code/mmdetection/data/coco/',
+        ann_file='annotations/instances_val2017.json',
+        data_prefix=dict(img='val2017/'),
+        test_mode=True,
+        pipeline=[
+            dict(type='LoadImageFromFile', backend_args=None),
+            dict(type='Resize', scale=(
+                640,
+                640,
+            ), keep_ratio=True),
+            dict(
+                type='Pad',
+                size=(
+                    640,
+                    640,
+                ),
+                pad_val=dict(img=(
+                    114,
+                    114,
+                    114,
+                ))),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                type='PackDetInputs',
+                meta_keys=(
+                    'img_id',
+                    'img_path',
+                    'ori_shape',
+                    'img_shape',
+                    'scale_factor',
+                )),
+        ],
+        backend_args=None))
+val_evaluator = dict(
+    type='CocoMetric',
+    ann_file=
+    '/gemini/code/mmdetection/data/coco/annotations/instances_val2017.json',
+    metric='bbox',
+    format_only=False,
+    backend_args=None,
+    proposal_nums=(
+        100,
+        1,
+        10,
+    ))
+test_evaluator = dict(
+    type='CocoMetric',
+    ann_file=
+    '/gemini/code/mmdetection/data/coco/annotations/instances_val2017.json',
+    metric='bbox',
+    format_only=False,
+    backend_args=None,
+    proposal_nums=(
+        100,
+        1,
+        10,
+    ))
+tta_model = dict(
+    type='DetTTAModel',
+    tta_cfg=dict(nms=dict(type='nms', iou_threshold=0.6), max_per_img=100))
+img_scales = [
+    (
+        640,
+        640,
+    ),
+    (
+        320,
+        320,
+    ),
+    (
+        960,
+        960,
+    ),
+]
+tta_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=None),
+    dict(
+        type='TestTimeAug',
+        transforms=[
+            [
+                dict(type='Resize', scale=(
+                    640,
+                    640,
+                ), keep_ratio=True),
+                dict(type='Resize', scale=(
+                    320,
+                    320,
+                ), keep_ratio=True),
+                dict(type='Resize', scale=(
+                    960,
+                    960,
+                ), keep_ratio=True),
+            ],
+            [
+                dict(type='RandomFlip', prob=1.0),
+                dict(type='RandomFlip', prob=0.0),
+            ],
+            [
+                dict(
+                    type='Pad',
+                    size=(
+                        960,
+                        960,
+                    ),
+                    pad_val=dict(img=(
+                        114,
+                        114,
+                        114,
+                    ))),
+            ],
+            [
+                dict(type='LoadAnnotations', with_bbox=True),
+            ],
+            [
+                dict(
+                    type='PackDetInputs',
+                    meta_keys=(
+                        'img_id',
+                        'img_path',
+                        'ori_shape',
+                        'img_shape',
+                        'scale_factor',
+                        'flip',
+                        'flip_direction',
+                    )),
+            ],
+        ]),
+]
+model = dict(
+    type='RTMDet',
+    data_preprocessor=dict(
+        type='DetDataPreprocessor',
+        mean=[
+            103.53,
+            116.28,
+            123.675,
+        ],
+        std=[
+            57.375,
+            57.12,
+            58.395,
+        ],
+        bgr_to_rgb=False,
+        batch_augments=None),
+    backbone=dict(
+        type='CSPNeXt',
+        arch='P5',
+        expand_ratio=0.5,
+        deepen_factor=0.167,
+        widen_factor=0.375,
+        channel_attention=True,
+        norm_cfg=dict(type='SyncBN'),
+        act_cfg=dict(type='SiLU', inplace=True),
+        init_cfg=dict(
+            type='Pretrained',
+            prefix='backbone.',
+            checkpoint=
+            'https://download.openmmlab.com/mmdetection/v3.0/rtmdet/cspnext_rsb_pretrain/cspnext-tiny_imagenet_600e.pth'
+        )),
+    neck=dict(
+        type='CSPNeXtPAFPN',
+        in_channels=[
+            96,
+            192,
+            384,
+        ],
+        out_channels=96,
+        num_csp_blocks=1,
+        expand_ratio=0.5,
+        norm_cfg=dict(type='SyncBN'),
+        act_cfg=dict(type='SiLU', inplace=True)),
+    bbox_head=dict(
+        type='RTMDetSepBNHead',
+        num_classes=80,
+        in_channels=96,
+        stacked_convs=2,
+        feat_channels=96,
+        anchor_generator=dict(
+            type='MlvlPointGenerator', offset=0, strides=[
+                8,
+                16,
+                32,
+            ]),
+        bbox_coder=dict(type='DistancePointBBoxCoder'),
+        loss_cls=dict(
+            type='QualityFocalLoss',
+            use_sigmoid=True,
+            beta=2.0,
+            loss_weight=1.0),
+        loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
+        with_objectness=False,
+        exp_on_reg=False,
+        share_conv=True,
+        pred_kernel_size=1,
+        norm_cfg=dict(type='SyncBN'),
+        act_cfg=dict(type='SiLU', inplace=True)),
+    train_cfg=dict(
+        assigner=dict(type='DynamicSoftLabelAssigner', topk=13),
+        allowed_border=-1,
+        pos_weight=-1,
+        debug=False),
+    test_cfg=dict(
+        nms_pre=30000,
+        min_bbox_size=0,
+        score_thr=0.001,
+        nms=dict(type='nms', iou_threshold=0.65),
+        max_per_img=300))
+train_pipeline_stage2 = [
+    dict(type='LoadImageFromFile', backend_args=None),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        type='RandomResize',
+        scale=(
+            640,
+            640,
+        ),
+        ratio_range=(
+            0.5,
+            2.0,
+        ),
+        keep_ratio=True),
+    dict(type='RandomCrop', crop_size=(
+        640,
+        640,
+    )),
+    dict(type='YOLOXHSVRandomAug'),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='Pad', size=(
+        640,
+        640,
+    ), pad_val=dict(img=(
+        114,
+        114,
+        114,
+    ))),
+    dict(type='PackDetInputs'),
+]
+max_epochs = 300
+stage2_num_epochs = 20
+base_lr = 0.004
+interval = 10
+custom_hooks = [
+    dict(
+        type='EMAHook',
+        ema_type='ExpMomentumEMA',
+        momentum=0.0002,
+        update_buffers=True,
+        priority=49),
+    dict(
+        type='PipelineSwitchHook',
+        switch_epoch=280,
+        switch_pipeline=[
+            dict(type='LoadImageFromFile', backend_args=None),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                type='RandomResize',
+                scale=(
+                    640,
+                    640,
+                ),
+                ratio_range=(
+                    0.5,
+                    2.0,
+                ),
+                keep_ratio=True),
+            dict(type='RandomCrop', crop_size=(
+                640,
+                640,
+            )),
+            dict(type='YOLOXHSVRandomAug'),
+            dict(type='RandomFlip', prob=0.5),
+            dict(
+                type='Pad',
+                size=(
+                    640,
+                    640,
+                ),
+                pad_val=dict(img=(
+                    114,
+                    114,
+                    114,
+                ))),
+            dict(type='PackDetInputs'),
+        ]),
+]
+checkpoint = 'https://download.openmmlab.com/mmdetection/v3.0/rtmdet/cspnext_rsb_pretrain/cspnext-tiny_imagenet_600e.pth'
+launcher = 'none'
+work_dir = './work_dirs/rtmdet_tiny_8xb32-300e_coco'
+
+07/23 17:21:27 - mmengine - INFO - Distributed training is not used, all SyncBatchNorm (SyncBN) layers in the model will be automatically reverted to BatchNormXd layers if they are used.
+07/23 17:21:27 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(49          ) EMAHook                            
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_load_checkpoint:
+(49          ) EMAHook                            
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+(NORMAL      ) PipelineSwitchHook                 
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val_epoch:
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DetVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_save_checkpoint:
+(49          ) EMAHook                            
+ -------------------- 
+after_train:
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test_epoch:
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DetVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(49          ) EMAHook                            
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+loading annotations into memory...
+Done (t=20.00s)
+creating index...
+index created!
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.2.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stem.2.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage1.1.attention.fc.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage2.1.attention.fc.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage3.1.attention.fc.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.1.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.1.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.1.conv2.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.1.conv2.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- backbone.stage4.2.attention.fc.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.reduce_layers.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.reduce_layers.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.reduce_layers.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.reduce_layers.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.0.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.top_down_blocks.1.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.downsamples.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.downsamples.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.downsamples.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.downsamples.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.0.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.main_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.main_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.short_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.short_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.final_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.final_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv2.depthwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv2.depthwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv2.pointwise_conv.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.bottom_up_blocks.1.blocks.0.conv2.pointwise_conv.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.2.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- neck.out_convs.2.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.0.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.0.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.0.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.0.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.cls_convs.1.0.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.1.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.1.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.cls_convs.1.1.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.1.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.1.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.cls_convs.2.0.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.2.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.2.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.cls_convs.2.1.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.2.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.cls_convs.2.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.0.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.0.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.0.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.0.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.reg_convs.1.0.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.1.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.1.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.reg_convs.1.1.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.1.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.1.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.reg_convs.2.0.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.2.0.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.2.0.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - WARNING - bbox_head.reg_convs.2.1.conv is duplicate. It is skipped since bypass_duplicate=True
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.2.1.bn.weight:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.reg_convs.2.1.bn.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_cls.0.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_cls.1.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_cls.2.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_reg.0.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_reg.1.bias:weight_decay=0.0
+07/23 17:22:07 - mmengine - INFO - paramwise_options -- bbox_head.rtm_reg.2.bias:weight_decay=0.0
+loading annotations into memory...
+Done (t=0.73s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.69s)
+creating index...
+index created!
+07/23 17:22:12 - mmengine - INFO - load backbone. in model from: https://download.openmmlab.com/mmdetection/v3.0/rtmdet/cspnext_rsb_pretrain/cspnext-tiny_imagenet_600e.pth
+Loads checkpoint by http backend from path: https://download.openmmlab.com/mmdetection/v3.0/rtmdet/cspnext_rsb_pretrain/cspnext-tiny_imagenet_600e.pth
+07/23 17:22:12 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+07/23 17:22:12 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+07/23 17:22:12 - mmengine - INFO - Checkpoints will be saved to /gemini/code/mmdetection/work_dirs/rtmdet_tiny_8xb32-300e_coco.
+07/23 17:22:32 - mmengine - INFO - Epoch(train)   [1][  50/9773]  base_lr: 1.9623e-04 lr: 1.9623e-04  eta: 13 days, 16:10:32  time: 0.4030  data_time: 0.0628  memory: 5132  loss: 6.0828  loss_cls: 4.7499  loss_bbox: 1.3328
+07/23 17:22:48 - mmengine - INFO - Epoch(train)   [1][ 100/9773]  base_lr: 3.9643e-04 lr: 3.9643e-04  eta: 12 days, 5:53:32  time: 0.3188  data_time: 0.0046  memory: 4806  loss: 2.2048  loss_cls: 0.9587  loss_bbox: 1.2461
+07/23 17:23:03 - mmengine - INFO - Epoch(train)   [1][ 150/9773]  base_lr: 5.9663e-04 lr: 5.9663e-04  eta: 11 days, 16:53:00  time: 0.3130  data_time: 0.0033  memory: 5251  loss: 2.0228  loss_cls: 0.8786  loss_bbox: 1.1443
+07/23 17:23:19 - mmengine - INFO - Epoch(train)   [1][ 200/9773]  base_lr: 7.9683e-04 lr: 7.9683e-04  eta: 11 days, 11:48:47  time: 0.3200  data_time: 0.0034  memory: 5078  loss: 1.9643  loss_cls: 0.8838  loss_bbox: 1.0805
+07/23 17:23:35 - mmengine - INFO - Epoch(train)   [1][ 250/9773]  base_lr: 9.9703e-04 lr: 9.9703e-04  eta: 11 days, 8:12:58  time: 0.3166  data_time: 0.0034  memory: 5078  loss: 1.8848  loss_cls: 0.8823  loss_bbox: 1.0026
+07/23 17:23:52 - mmengine - INFO - Epoch(train)   [1][ 300/9773]  base_lr: 1.1972e-03 lr: 1.1972e-03  eta: 11 days, 7:11:25  time: 0.3268  data_time: 0.0033  memory: 5382  loss: 1.8639  loss_cls: 0.9271  loss_bbox: 0.9368
+07/23 17:24:07 - mmengine - INFO - Epoch(train)   [1][ 350/9773]  base_lr: 1.3974e-03 lr: 1.3974e-03  eta: 11 days, 5:10:27  time: 0.3157  data_time: 0.0033  memory: 5117  loss: 1.8548  loss_cls: 0.9607  loss_bbox: 0.8941
+[31m2023-07-23 17:24:09 [ERROR] [ -4280403,Out of memory ] cuMemAlloc(): fail to allocate 200704 KB memory (out of memory)[0m
+07/23 17:24:28 - mmengine - INFO - Epoch(train)   [1][ 400/9773]  base_lr: 1.5976e-03 lr: 1.5976e-03  eta: 11 days, 13:05:33  time: 0.4084  data_time: 0.0033  memory: 5666  loss: 1.8530  loss_cls: 1.0023  loss_bbox: 0.8507
+07/23 17:24:44 - mmengine - INFO - Epoch(train)   [1][ 450/9773]  base_lr: 1.7978e-03 lr: 1.7978e-03  eta: 11 days, 11:26:24  time: 0.3221  data_time: 0.0044  memory: 5689  loss: 1.8599  loss_cls: 1.0307  loss_bbox: 0.8292
+07/23 17:25:00 - mmengine - INFO - Epoch(train)   [1][ 500/9773]  base_lr: 1.9980e-03 lr: 1.9980e-03  eta: 11 days, 10:01:33  time: 0.3209  data_time: 0.0032  memory: 5124  loss: 1.7938  loss_cls: 1.0025  loss_bbox: 0.7913
+07/23 17:25:16 - mmengine - INFO - Epoch(train)   [1][ 550/9773]  base_lr: 2.1982e-03 lr: 2.1982e-03  eta: 11 days, 8:59:29  time: 0.3226  data_time: 0.0033  memory: 5491  loss: 1.8369  loss_cls: 1.0657  loss_bbox: 0.7711
+07/23 17:25:33 - mmengine - INFO - Epoch(train)   [1][ 600/9773]  base_lr: 2.3984e-03 lr: 2.3984e-03  eta: 11 days, 9:47:19  time: 0.3471  data_time: 0.0034  memory: 5484  loss: 1.8169  loss_cls: 1.0633  loss_bbox: 0.7536
+07/23 17:25:50 - mmengine - INFO - Epoch(train)   [1][ 650/9773]  base_lr: 2.5986e-03 lr: 2.5986e-03  eta: 11 days, 9:02:39  time: 0.3244  data_time: 0.0033  memory: 5075  loss: 1.8352  loss_cls: 1.0806  loss_bbox: 0.7545
+07/23 17:26:06 - mmengine - INFO - Epoch(train)   [1][ 700/9773]  base_lr: 2.7988e-03 lr: 2.7988e-03  eta: 11 days, 8:47:11  time: 0.3310  data_time: 0.0039  memory: 4968  loss: 1.7739  loss_cls: 1.0246  loss_bbox: 0.7493
+07/23 17:26:22 - mmengine - INFO - Epoch(train)   [1][ 750/9773]  base_lr: 2.9990e-03 lr: 2.9990e-03  eta: 11 days, 7:48:41  time: 0.3172  data_time: 0.0033  memory: 5352  loss: 1.8001  loss_cls: 1.0676  loss_bbox: 0.7325
+07/23 17:26:39 - mmengine - INFO - Epoch(train)   [1][ 800/9773]  base_lr: 3.1992e-03 lr: 3.1992e-03  eta: 11 days, 7:34:05  time: 0.3291  data_time: 0.0038  memory: 5217  loss: 1.8113  loss_cls: 1.0882  loss_bbox: 0.7232
+07/23 17:26:55 - mmengine - INFO - Epoch(train)   [1][ 850/9773]  base_lr: 3.3994e-03 lr: 3.3994e-03  eta: 11 days, 6:56:36  time: 0.3206  data_time: 0.0034  memory: 5120  loss: 1.7981  loss_cls: 1.0726  loss_bbox: 0.7255
+07/23 17:27:10 - mmengine - INFO - Epoch(train)   [1][ 900/9773]  base_lr: 3.5996e-03 lr: 3.5996e-03  eta: 11 days, 5:50:16  time: 0.3084  data_time: 0.0031  memory: 4992  loss: 1.7822  loss_cls: 1.0744  loss_bbox: 0.7078
+07/23 17:27:26 - mmengine - INFO - Epoch(train)   [1][ 950/9773]  base_lr: 3.7998e-03 lr: 3.7998e-03  eta: 11 days, 5:08:01  time: 0.3151  data_time: 0.0033  memory: 5183  loss: 1.7891  loss_cls: 1.0769  loss_bbox: 0.7122
+07/23 17:27:42 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:27:42 - mmengine - INFO - Epoch(train)   [1][1000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 4:58:08  time: 0.3266  data_time: 0.0040  memory: 5320  loss: 1.7702  loss_cls: 1.0667  loss_bbox: 0.7035
+07/23 17:27:58 - mmengine - INFO - Epoch(train)   [1][1050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 4:50:54  time: 0.3274  data_time: 0.0023  memory: 5303  loss: 1.7891  loss_cls: 1.0878  loss_bbox: 0.7013
+07/23 17:28:14 - mmengine - INFO - Epoch(train)   [1][1100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 4:16:30  time: 0.3149  data_time: 0.0041  memory: 5102  loss: 1.7850  loss_cls: 1.0844  loss_bbox: 0.7005
+07/23 17:28:30 - mmengine - INFO - Epoch(train)   [1][1150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 3:51:05  time: 0.3177  data_time: 0.0047  memory: 5107  loss: 1.7637  loss_cls: 1.0883  loss_bbox: 0.6754
+07/23 17:28:46 - mmengine - INFO - Epoch(train)   [1][1200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 3:23:46  time: 0.3157  data_time: 0.0039  memory: 5154  loss: 1.7532  loss_cls: 1.0831  loss_bbox: 0.6702
+07/23 17:29:02 - mmengine - INFO - Epoch(train)   [1][1250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 3:02:04  time: 0.3175  data_time: 0.0027  memory: 6097  loss: 1.7635  loss_cls: 1.0954  loss_bbox: 0.6681
+07/23 17:29:18 - mmengine - INFO - Epoch(train)   [1][1300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 2:59:52  time: 0.3270  data_time: 0.0035  memory: 5482  loss: 1.7423  loss_cls: 1.0701  loss_bbox: 0.6723
+07/23 17:29:34 - mmengine - INFO - Epoch(train)   [1][1350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 2:46:52  time: 0.3210  data_time: 0.0024  memory: 5278  loss: 1.7287  loss_cls: 1.0611  loss_bbox: 0.6677
+07/23 17:29:50 - mmengine - INFO - Epoch(train)   [1][1400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 2:27:24  time: 0.3167  data_time: 0.0025  memory: 5130  loss: 1.7221  loss_cls: 1.0644  loss_bbox: 0.6577
+07/23 17:30:06 - mmengine - INFO - Epoch(train)   [1][1450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 2:20:07  time: 0.3232  data_time: 0.0024  memory: 5207  loss: 1.7064  loss_cls: 1.0404  loss_bbox: 0.6660
+07/23 17:30:22 - mmengine - INFO - Epoch(train)   [1][1500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 2:12:00  time: 0.3224  data_time: 0.0024  memory: 5206  loss: 1.7271  loss_cls: 1.0650  loss_bbox: 0.6620
+07/23 17:30:38 - mmengine - INFO - Epoch(train)   [1][1550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:55:57  time: 0.3170  data_time: 0.0032  memory: 5239  loss: 1.7090  loss_cls: 1.0502  loss_bbox: 0.6588
+07/23 17:30:54 - mmengine - INFO - Epoch(train)   [1][1600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:52:20  time: 0.3245  data_time: 0.0027  memory: 4908  loss: 1.7012  loss_cls: 1.0408  loss_bbox: 0.6604
+07/23 17:31:10 - mmengine - INFO - Epoch(train)   [1][1650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:43:54  time: 0.3211  data_time: 0.0025  memory: 5673  loss: 1.6900  loss_cls: 1.0393  loss_bbox: 0.6507
+07/23 17:31:26 - mmengine - INFO - Epoch(train)   [1][1700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:34:32  time: 0.3201  data_time: 0.0040  memory: 5331  loss: 1.7050  loss_cls: 1.0499  loss_bbox: 0.6551
+07/23 17:31:42 - mmengine - INFO - Epoch(train)   [1][1750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:24:39  time: 0.3194  data_time: 0.0025  memory: 5213  loss: 1.6964  loss_cls: 1.0537  loss_bbox: 0.6427
+07/23 17:31:58 - mmengine - INFO - Epoch(train)   [1][1800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:07:42  time: 0.3138  data_time: 0.0033  memory: 5206  loss: 1.6939  loss_cls: 1.0473  loss_bbox: 0.6466
+07/23 17:32:14 - mmengine - INFO - Epoch(train)   [1][1850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 1:03:38  time: 0.3229  data_time: 0.0025  memory: 4984  loss: 1.6985  loss_cls: 1.0410  loss_bbox: 0.6576
+07/23 17:32:30 - mmengine - INFO - Epoch(train)   [1][1900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:52:06  time: 0.3169  data_time: 0.0026  memory: 5041  loss: 1.6742  loss_cls: 1.0279  loss_bbox: 0.6464
+07/23 17:32:46 - mmengine - INFO - Epoch(train)   [1][1950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:39:17  time: 0.3154  data_time: 0.0024  memory: 4970  loss: 1.7150  loss_cls: 1.0598  loss_bbox: 0.6552
+07/23 17:33:02 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:33:02 - mmengine - INFO - Epoch(train)   [1][2000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:40:02  time: 0.3260  data_time: 0.0024  memory: 5265  loss: 1.6614  loss_cls: 1.0104  loss_bbox: 0.6510
+07/23 17:33:18 - mmengine - INFO - Epoch(train)   [1][2050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:37:36  time: 0.3234  data_time: 0.0040  memory: 4995  loss: 1.6959  loss_cls: 1.0537  loss_bbox: 0.6422
+07/23 17:33:35 - mmengine - INFO - Epoch(train)   [1][2100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:36:18  time: 0.3243  data_time: 0.0034  memory: 5613  loss: 1.7178  loss_cls: 1.0770  loss_bbox: 0.6407
+07/23 17:33:50 - mmengine - INFO - Epoch(train)   [1][2150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:25:52  time: 0.3162  data_time: 0.0024  memory: 5464  loss: 1.7175  loss_cls: 1.0715  loss_bbox: 0.6460
+07/23 17:34:07 - mmengine - INFO - Epoch(train)   [1][2200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:25:27  time: 0.3248  data_time: 0.0030  memory: 5059  loss: 1.6895  loss_cls: 1.0531  loss_bbox: 0.6364
+07/23 17:34:23 - mmengine - INFO - Epoch(train)   [1][2250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:21:53  time: 0.3219  data_time: 0.0025  memory: 5067  loss: 1.6768  loss_cls: 1.0345  loss_bbox: 0.6423
+07/23 17:34:39 - mmengine - INFO - Epoch(train)   [1][2300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:16:24  time: 0.3199  data_time: 0.0029  memory: 4850  loss: 1.6769  loss_cls: 1.0444  loss_bbox: 0.6326
+07/23 17:34:55 - mmengine - INFO - Epoch(train)   [1][2350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:17:50  time: 0.3264  data_time: 0.0025  memory: 5475  loss: 1.6618  loss_cls: 1.0252  loss_bbox: 0.6366
+[31m2023-07-23 17:35:01 [ERROR] [ -4280403,Out of memory ] cuMemAlloc(): fail to allocate 251904 KB memory (out of memory)[0m
+07/23 17:35:11 - mmengine - INFO - Epoch(train)   [1][2400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:18:04  time: 0.3253  data_time: 0.0025  memory: 6130  loss: 1.6513  loss_cls: 1.0227  loss_bbox: 0.6286
+07/23 17:35:27 - mmengine - INFO - Epoch(train)   [1][2450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:07:01  time: 0.3140  data_time: 0.0025  memory: 5020  loss: 1.6765  loss_cls: 1.0382  loss_bbox: 0.6383
+07/23 17:35:43 - mmengine - INFO - Epoch(train)   [1][2500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:03:54  time: 0.3217  data_time: 0.0026  memory: 5241  loss: 1.7239  loss_cls: 1.0709  loss_bbox: 0.6530
+07/23 17:35:59 - mmengine - INFO - Epoch(train)   [1][2550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:49:23  time: 0.3096  data_time: 0.0033  memory: 5173  loss: 1.7218  loss_cls: 1.0850  loss_bbox: 0.6368
+07/23 17:36:16 - mmengine - INFO - Epoch(train)   [1][2600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:10:56  time: 0.3475  data_time: 0.0088  memory: 5407  loss: 1.6956  loss_cls: 1.0527  loss_bbox: 0.6428
+07/23 17:36:32 - mmengine - INFO - Epoch(train)   [1][2650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:13:08  time: 0.3274  data_time: 0.0034  memory: 5107  loss: 1.6709  loss_cls: 1.0369  loss_bbox: 0.6340
+07/23 17:36:49 - mmengine - INFO - Epoch(train)   [1][2700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:14:26  time: 0.3265  data_time: 0.0034  memory: 5358  loss: 1.6857  loss_cls: 1.0419  loss_bbox: 0.6438
+07/23 17:37:05 - mmengine - INFO - Epoch(train)   [1][2750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:13:06  time: 0.3235  data_time: 0.0026  memory: 5158  loss: 1.6607  loss_cls: 1.0347  loss_bbox: 0.6260
+07/23 17:37:21 - mmengine - INFO - Epoch(train)   [1][2800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:03:38  time: 0.3142  data_time: 0.0027  memory: 5043  loss: 1.6836  loss_cls: 1.0522  loss_bbox: 0.6313
+07/23 17:37:37 - mmengine - INFO - Epoch(train)   [1][2850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 11 days, 0:05:31  time: 0.3271  data_time: 0.0048  memory: 5062  loss: 1.6804  loss_cls: 1.0447  loss_bbox: 0.6358
+07/23 17:37:53 - mmengine - INFO - Epoch(train)   [1][2900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:55:13  time: 0.3127  data_time: 0.0026  memory: 5496  loss: 1.6548  loss_cls: 1.0219  loss_bbox: 0.6328
+07/23 17:38:09 - mmengine - INFO - Epoch(train)   [1][2950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:50:24  time: 0.3189  data_time: 0.0036  memory: 5097  loss: 1.6828  loss_cls: 1.0538  loss_bbox: 0.6290
+07/23 17:38:24 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:38:24 - mmengine - INFO - Epoch(train)   [1][3000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:43:49  time: 0.3165  data_time: 0.0057  memory: 5044  loss: 1.6897  loss_cls: 1.0585  loss_bbox: 0.6312
+07/23 17:38:41 - mmengine - INFO - Epoch(train)   [1][3050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:45:54  time: 0.3271  data_time: 0.0026  memory: 5299  loss: 1.6636  loss_cls: 1.0364  loss_bbox: 0.6273
+07/23 17:38:57 - mmengine - INFO - Epoch(train)   [1][3100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:39:30  time: 0.3164  data_time: 0.0026  memory: 5121  loss: 1.6530  loss_cls: 1.0257  loss_bbox: 0.6273
+07/23 17:39:13 - mmengine - INFO - Epoch(train)   [1][3150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:41:10  time: 0.3266  data_time: 0.0027  memory: 5462  loss: 1.6296  loss_cls: 0.9963  loss_bbox: 0.6334
+07/23 17:39:29 - mmengine - INFO - Epoch(train)   [1][3200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:37:00  time: 0.3190  data_time: 0.0027  memory: 5148  loss: 1.6812  loss_cls: 1.0535  loss_bbox: 0.6277
+07/23 17:39:46 - mmengine - INFO - Epoch(train)   [1][3250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:41:58  time: 0.3310  data_time: 0.0028  memory: 4941  loss: 1.6937  loss_cls: 1.0574  loss_bbox: 0.6362
+07/23 17:40:01 - mmengine - INFO - Epoch(train)   [1][3300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:36:23  time: 0.3169  data_time: 0.0027  memory: 5291  loss: 1.6824  loss_cls: 1.0416  loss_bbox: 0.6407
+07/23 17:40:17 - mmengine - INFO - Epoch(train)   [1][3350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:28:27  time: 0.3135  data_time: 0.0030  memory: 4990  loss: 1.6741  loss_cls: 1.0499  loss_bbox: 0.6242
+07/23 17:40:34 - mmengine - INFO - Epoch(train)   [1][3400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:33:08  time: 0.3308  data_time: 0.0027  memory: 5001  loss: 1.6582  loss_cls: 1.0274  loss_bbox: 0.6309
+07/23 17:40:50 - mmengine - INFO - Epoch(train)   [1][3450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:29:26  time: 0.3191  data_time: 0.0065  memory: 5244  loss: 1.6585  loss_cls: 1.0378  loss_bbox: 0.6208
+07/23 17:41:05 - mmengine - INFO - Epoch(train)   [1][3500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:24:50  time: 0.3177  data_time: 0.0029  memory: 5426  loss: 1.6986  loss_cls: 1.0801  loss_bbox: 0.6185
+07/23 17:41:22 - mmengine - INFO - Epoch(train)   [1][3550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:23:52  time: 0.3228  data_time: 0.0038  memory: 4937  loss: 1.6825  loss_cls: 1.0546  loss_bbox: 0.6279
+07/23 17:41:37 - mmengine - INFO - Epoch(train)   [1][3600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:17:39  time: 0.3150  data_time: 0.0028  memory: 5213  loss: 1.6904  loss_cls: 1.0617  loss_bbox: 0.6287
+07/23 17:41:54 - mmengine - INFO - Epoch(train)   [1][3650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:19:48  time: 0.3273  data_time: 0.0027  memory: 4974  loss: 1.6490  loss_cls: 1.0185  loss_bbox: 0.6305
+07/23 17:42:10 - mmengine - INFO - Epoch(train)   [1][3700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:23:38  time: 0.3300  data_time: 0.0035  memory: 5306  loss: 1.6556  loss_cls: 1.0290  loss_bbox: 0.6265
+07/23 17:42:27 - mmengine - INFO - Epoch(train)   [1][3750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:24:19  time: 0.3253  data_time: 0.0032  memory: 5375  loss: 1.6880  loss_cls: 1.0651  loss_bbox: 0.6230
+07/23 17:42:43 - mmengine - INFO - Epoch(train)   [1][3800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:21:56  time: 0.3206  data_time: 0.0027  memory: 5516  loss: 1.6917  loss_cls: 1.0615  loss_bbox: 0.6301
+07/23 17:42:59 - mmengine - INFO - Epoch(train)   [1][3850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:19:04  time: 0.3197  data_time: 0.0029  memory: 5152  loss: 1.6581  loss_cls: 1.0448  loss_bbox: 0.6133
+07/23 17:43:15 - mmengine - INFO - Epoch(train)   [1][3900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:21:57  time: 0.3288  data_time: 0.0029  memory: 5053  loss: 1.6702  loss_cls: 1.0538  loss_bbox: 0.6165
+07/23 17:43:31 - mmengine - INFO - Epoch(train)   [1][3950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:13:44  time: 0.3110  data_time: 0.0027  memory: 5313  loss: 1.6745  loss_cls: 1.0419  loss_bbox: 0.6325
+07/23 17:43:47 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:43:47 - mmengine - INFO - Epoch(train)   [1][4000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:11:49  time: 0.3209  data_time: 0.0027  memory: 5132  loss: 1.6545  loss_cls: 1.0256  loss_bbox: 0.6289
+07/23 17:44:02 - mmengine - INFO - Epoch(train)   [1][4050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:07:30  time: 0.3169  data_time: 0.0034  memory: 4918  loss: 1.6931  loss_cls: 1.0676  loss_bbox: 0.6255
+07/23 17:44:18 - mmengine - INFO - Epoch(train)   [1][4100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:03:31  time: 0.3173  data_time: 0.0028  memory: 5169  loss: 1.6794  loss_cls: 1.0552  loss_bbox: 0.6242
+07/23 17:44:35 - mmengine - INFO - Epoch(train)   [1][4150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 23:03:49  time: 0.3244  data_time: 0.0028  memory: 5244  loss: 1.6942  loss_cls: 1.0780  loss_bbox: 0.6161
+07/23 17:44:50 - mmengine - INFO - Epoch(train)   [1][4200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:58:51  time: 0.3154  data_time: 0.0027  memory: 5172  loss: 1.6688  loss_cls: 1.0510  loss_bbox: 0.6178
+07/23 17:45:06 - mmengine - INFO - Epoch(train)   [1][4250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:54:33  time: 0.3163  data_time: 0.0032  memory: 5749  loss: 1.6775  loss_cls: 1.0555  loss_bbox: 0.6220
+07/23 17:45:22 - mmengine - INFO - Epoch(train)   [1][4300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:55:56  time: 0.3262  data_time: 0.0032  memory: 5143  loss: 1.6622  loss_cls: 1.0413  loss_bbox: 0.6209
+07/23 17:45:38 - mmengine - INFO - Epoch(train)   [1][4350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:52:43  time: 0.3180  data_time: 0.0029  memory: 5174  loss: 1.6759  loss_cls: 1.0570  loss_bbox: 0.6189
+07/23 17:45:55 - mmengine - INFO - Epoch(train)   [1][4400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:53:15  time: 0.3247  data_time: 0.0028  memory: 5164  loss: 1.6579  loss_cls: 1.0363  loss_bbox: 0.6216
+07/23 17:46:11 - mmengine - INFO - Epoch(train)   [1][4450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:50:28  time: 0.3187  data_time: 0.0046  memory: 5332  loss: 1.6858  loss_cls: 1.0707  loss_bbox: 0.6152
+07/23 17:46:27 - mmengine - INFO - Epoch(train)   [1][4500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:48:14  time: 0.3196  data_time: 0.0034  memory: 5149  loss: 1.6933  loss_cls: 1.0752  loss_bbox: 0.6181
+07/23 17:46:43 - mmengine - INFO - Epoch(train)   [1][4550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:49:04  time: 0.3252  data_time: 0.0028  memory: 5218  loss: 1.6748  loss_cls: 1.0556  loss_bbox: 0.6192
+07/23 17:46:59 - mmengine - INFO - Epoch(train)   [1][4600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:45:21  time: 0.3167  data_time: 0.0043  memory: 4807  loss: 1.6638  loss_cls: 1.0595  loss_bbox: 0.6043
+07/23 17:47:15 - mmengine - INFO - Epoch(train)   [1][4650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:41:57  time: 0.3172  data_time: 0.0029  memory: 5280  loss: 1.6615  loss_cls: 1.0510  loss_bbox: 0.6105
+07/23 17:47:31 - mmengine - INFO - Epoch(train)   [1][4700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:47:46  time: 0.3348  data_time: 0.0057  memory: 5174  loss: 1.6592  loss_cls: 1.0440  loss_bbox: 0.6152
+07/23 17:47:47 - mmengine - INFO - Epoch(train)   [1][4750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:47:31  time: 0.3233  data_time: 0.0042  memory: 5164  loss: 1.6996  loss_cls: 1.0771  loss_bbox: 0.6225
+07/23 17:48:03 - mmengine - INFO - Epoch(train)   [1][4800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:41:49  time: 0.3125  data_time: 0.0031  memory: 4942  loss: 1.6955  loss_cls: 1.0902  loss_bbox: 0.6053
+07/23 17:48:19 - mmengine - INFO - Epoch(train)   [1][4850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:38:13  time: 0.3165  data_time: 0.0030  memory: 5344  loss: 1.6831  loss_cls: 1.0770  loss_bbox: 0.6061
+07/23 17:48:35 - mmengine - INFO - Epoch(train)   [1][4900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:35:34  time: 0.3183  data_time: 0.0029  memory: 4944  loss: 1.6483  loss_cls: 1.0368  loss_bbox: 0.6115
+07/23 17:48:51 - mmengine - INFO - Epoch(train)   [1][4950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:37:21  time: 0.3271  data_time: 0.0028  memory: 5617  loss: 1.6498  loss_cls: 1.0265  loss_bbox: 0.6233
+07/23 17:49:07 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:49:07 - mmengine - INFO - Epoch(train)   [1][5000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:33:31  time: 0.3157  data_time: 0.0028  memory: 5385  loss: 1.6699  loss_cls: 1.0626  loss_bbox: 0.6073
+07/23 17:49:23 - mmengine - INFO - Epoch(train)   [1][5050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:33:55  time: 0.3243  data_time: 0.0027  memory: 5162  loss: 1.6435  loss_cls: 1.0237  loss_bbox: 0.6198
+07/23 17:49:39 - mmengine - INFO - Epoch(train)   [1][5100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:33:22  time: 0.3224  data_time: 0.0027  memory: 5255  loss: 1.6320  loss_cls: 1.0282  loss_bbox: 0.6038
+07/23 17:49:55 - mmengine - INFO - Epoch(train)   [1][5150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:29:43  time: 0.3158  data_time: 0.0028  memory: 5148  loss: 1.6295  loss_cls: 1.0182  loss_bbox: 0.6113
+07/23 17:50:12 - mmengine - INFO - Epoch(train)   [1][5200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:31:22  time: 0.3270  data_time: 0.0034  memory: 4786  loss: 1.6329  loss_cls: 1.0317  loss_bbox: 0.6011
+07/23 17:50:28 - mmengine - INFO - Epoch(train)   [1][5250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:30:45  time: 0.3222  data_time: 0.0029  memory: 4964  loss: 1.6624  loss_cls: 1.0492  loss_bbox: 0.6132
+07/23 17:50:44 - mmengine - INFO - Epoch(train)   [1][5300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:30:22  time: 0.3227  data_time: 0.0028  memory: 5089  loss: 1.6592  loss_cls: 1.0399  loss_bbox: 0.6193
+07/23 17:50:59 - mmengine - INFO - Epoch(train)   [1][5350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:25:34  time: 0.3130  data_time: 0.0040  memory: 5215  loss: 1.6743  loss_cls: 1.0701  loss_bbox: 0.6041
+07/23 17:51:15 - mmengine - INFO - Epoch(train)   [1][5400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:22:43  time: 0.3171  data_time: 0.0029  memory: 5674  loss: 1.6423  loss_cls: 1.0297  loss_bbox: 0.6126
+07/23 17:51:31 - mmengine - INFO - Epoch(train)   [1][5450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:21:58  time: 0.3217  data_time: 0.0028  memory: 5061  loss: 1.6920  loss_cls: 1.0760  loss_bbox: 0.6160
+07/23 17:51:48 - mmengine - INFO - Epoch(train)   [1][5500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:23:20  time: 0.3264  data_time: 0.0028  memory: 5318  loss: 1.6868  loss_cls: 1.0654  loss_bbox: 0.6214
+07/23 17:52:04 - mmengine - INFO - Epoch(train)   [1][5550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:22:03  time: 0.3205  data_time: 0.0044  memory: 5183  loss: 1.6767  loss_cls: 1.0671  loss_bbox: 0.6096
+07/23 17:52:20 - mmengine - INFO - Epoch(train)   [1][5600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:22:17  time: 0.3239  data_time: 0.0029  memory: 6133  loss: 1.6770  loss_cls: 1.0665  loss_bbox: 0.6105
+07/23 17:52:36 - mmengine - INFO - Epoch(train)   [1][5650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:18:58  time: 0.3157  data_time: 0.0038  memory: 5041  loss: 1.6593  loss_cls: 1.0449  loss_bbox: 0.6144
+07/23 17:52:52 - mmengine - INFO - Epoch(train)   [1][5700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:17:54  time: 0.3208  data_time: 0.0032  memory: 5228  loss: 1.6696  loss_cls: 1.0663  loss_bbox: 0.6033
+07/23 17:53:08 - mmengine - INFO - Epoch(train)   [1][5750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:15:45  time: 0.3183  data_time: 0.0029  memory: 5536  loss: 1.6780  loss_cls: 1.0706  loss_bbox: 0.6074
+07/23 17:53:24 - mmengine - INFO - Epoch(train)   [1][5800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:16:04  time: 0.3240  data_time: 0.0027  memory: 5373  loss: 1.6139  loss_cls: 1.0113  loss_bbox: 0.6026
+07/23 17:53:40 - mmengine - INFO - Epoch(train)   [1][5850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:12:06  time: 0.3138  data_time: 0.0028  memory: 5387  loss: 1.6429  loss_cls: 1.0412  loss_bbox: 0.6016
+07/23 17:53:56 - mmengine - INFO - Epoch(train)   [1][5900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:10:17  time: 0.3188  data_time: 0.0034  memory: 5283  loss: 1.6779  loss_cls: 1.0652  loss_bbox: 0.6127
+07/23 17:54:12 - mmengine - INFO - Epoch(train)   [1][5950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:09:32  time: 0.3214  data_time: 0.0028  memory: 4990  loss: 1.6487  loss_cls: 1.0407  loss_bbox: 0.6080
+07/23 17:54:28 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:54:28 - mmengine - INFO - Epoch(train)   [1][6000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:08:49  time: 0.3215  data_time: 0.0047  memory: 5526  loss: 1.6800  loss_cls: 1.0594  loss_bbox: 0.6206
+07/23 17:54:44 - mmengine - INFO - Epoch(train)   [1][6050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:06:40  time: 0.3179  data_time: 0.0029  memory: 4971  loss: 1.6465  loss_cls: 1.0324  loss_bbox: 0.6141
+07/23 17:55:00 - mmengine - INFO - Epoch(train)   [1][6100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:07:13  time: 0.3245  data_time: 0.0030  memory: 5127  loss: 1.6334  loss_cls: 1.0184  loss_bbox: 0.6150
+07/23 17:55:16 - mmengine - INFO - Epoch(train)   [1][6150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:06:23  time: 0.3211  data_time: 0.0036  memory: 5648  loss: 1.6730  loss_cls: 1.0573  loss_bbox: 0.6157
+07/23 17:55:33 - mmengine - INFO - Epoch(train)   [1][6200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:13:21  time: 0.3409  data_time: 0.0028  memory: 5502  loss: 1.6512  loss_cls: 1.0464  loss_bbox: 0.6048
+07/23 17:55:48 - mmengine - INFO - Epoch(train)   [1][6250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:07:41  time: 0.3088  data_time: 0.0028  memory: 5166  loss: 1.6578  loss_cls: 1.0554  loss_bbox: 0.6023
+07/23 17:56:05 - mmengine - INFO - Epoch(train)   [1][6300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:06:44  time: 0.3208  data_time: 0.0031  memory: 5311  loss: 1.6761  loss_cls: 1.0622  loss_bbox: 0.6139
+07/23 17:56:21 - mmengine - INFO - Epoch(train)   [1][6350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:06:53  time: 0.3236  data_time: 0.0028  memory: 5063  loss: 1.6546  loss_cls: 1.0342  loss_bbox: 0.6203
+07/23 17:56:37 - mmengine - INFO - Epoch(train)   [1][6400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:05:38  time: 0.3199  data_time: 0.0034  memory: 4977  loss: 1.6057  loss_cls: 1.0041  loss_bbox: 0.6016
+07/23 17:56:53 - mmengine - INFO - Epoch(train)   [1][6450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:08:12  time: 0.3300  data_time: 0.0034  memory: 5253  loss: 1.6234  loss_cls: 1.0270  loss_bbox: 0.5965
+07/23 17:57:09 - mmengine - INFO - Epoch(train)   [1][6500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:07:52  time: 0.3224  data_time: 0.0031  memory: 5305  loss: 1.6673  loss_cls: 1.0598  loss_bbox: 0.6074
+07/23 17:57:25 - mmengine - INFO - Epoch(train)   [1][6550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:03:04  time: 0.3104  data_time: 0.0029  memory: 4950  loss: 1.6527  loss_cls: 1.0543  loss_bbox: 0.5984
+07/23 17:57:41 - mmengine - INFO - Epoch(train)   [1][6600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:00:30  time: 0.3163  data_time: 0.0029  memory: 5115  loss: 1.6334  loss_cls: 1.0367  loss_bbox: 0.5967
+07/23 17:57:57 - mmengine - INFO - Epoch(train)   [1][6650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:59:43  time: 0.3210  data_time: 0.0039  memory: 5311  loss: 1.6561  loss_cls: 1.0468  loss_bbox: 0.6093
+07/23 17:58:13 - mmengine - INFO - Epoch(train)   [1][6700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:59:40  time: 0.3230  data_time: 0.0044  memory: 5182  loss: 1.6688  loss_cls: 1.0577  loss_bbox: 0.6111
+07/23 17:58:29 - mmengine - INFO - Epoch(train)   [1][6750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:00:41  time: 0.3260  data_time: 0.0029  memory: 5009  loss: 1.6579  loss_cls: 1.0558  loss_bbox: 0.6021
+07/23 17:58:46 - mmengine - INFO - Epoch(train)   [1][6800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 22:02:35  time: 0.3285  data_time: 0.0029  memory: 5188  loss: 1.6230  loss_cls: 1.0334  loss_bbox: 0.5896
+07/23 17:59:01 - mmengine - INFO - Epoch(train)   [1][6850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:58:43  time: 0.3124  data_time: 0.0029  memory: 5185  loss: 1.6146  loss_cls: 1.0129  loss_bbox: 0.6016
+07/23 17:59:17 - mmengine - INFO - Epoch(train)   [1][6900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:57:41  time: 0.3202  data_time: 0.0028  memory: 5011  loss: 1.6535  loss_cls: 1.0462  loss_bbox: 0.6073
+07/23 17:59:33 - mmengine - INFO - Epoch(train)   [1][6950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:56:46  time: 0.3206  data_time: 0.0034  memory: 5337  loss: 1.6663  loss_cls: 1.0599  loss_bbox: 0.6064
+07/23 17:59:49 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 17:59:49 - mmengine - INFO - Epoch(train)   [1][7000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:55:41  time: 0.3201  data_time: 0.0028  memory: 4871  loss: 1.6675  loss_cls: 1.0719  loss_bbox: 0.5956
+07/23 18:00:05 - mmengine - INFO - Epoch(train)   [1][7050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:52:47  time: 0.3148  data_time: 0.0030  memory: 5052  loss: 1.6561  loss_cls: 1.0595  loss_bbox: 0.5966
+07/23 18:00:21 - mmengine - INFO - Epoch(train)   [1][7100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:48:44  time: 0.3113  data_time: 0.0030  memory: 5068  loss: 1.6669  loss_cls: 1.0701  loss_bbox: 0.5968
+07/23 18:00:36 - mmengine - INFO - Epoch(train)   [1][7150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:44:59  time: 0.3120  data_time: 0.0040  memory: 5183  loss: 1.6379  loss_cls: 1.0467  loss_bbox: 0.5912
+07/23 18:00:52 - mmengine - INFO - Epoch(train)   [1][7200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:44:28  time: 0.3214  data_time: 0.0035  memory: 5435  loss: 1.6292  loss_cls: 1.0340  loss_bbox: 0.5952
+07/23 18:01:09 - mmengine - INFO - Epoch(train)   [1][7250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:49:04  time: 0.3367  data_time: 0.0029  memory: 5308  loss: 1.6315  loss_cls: 1.0294  loss_bbox: 0.6021
+07/23 18:01:25 - mmengine - INFO - Epoch(train)   [1][7300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:46:11  time: 0.3144  data_time: 0.0036  memory: 5027  loss: 1.6552  loss_cls: 1.0555  loss_bbox: 0.5998
+07/23 18:01:41 - mmengine - INFO - Epoch(train)   [1][7350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:48:15  time: 0.3293  data_time: 0.0046  memory: 5256  loss: 1.6160  loss_cls: 1.0185  loss_bbox: 0.5975
+07/23 18:01:57 - mmengine - INFO - Epoch(train)   [1][7400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:43:39  time: 0.3091  data_time: 0.0029  memory: 4936  loss: 1.6230  loss_cls: 1.0265  loss_bbox: 0.5965
+07/23 18:02:13 - mmengine - INFO - Epoch(train)   [1][7450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:41:35  time: 0.3167  data_time: 0.0029  memory: 5342  loss: 1.6306  loss_cls: 1.0288  loss_bbox: 0.6018
+07/23 18:02:29 - mmengine - INFO - Epoch(train)   [1][7500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:43:26  time: 0.3286  data_time: 0.0036  memory: 5009  loss: 1.6490  loss_cls: 1.0463  loss_bbox: 0.6028
+07/23 18:02:45 - mmengine - INFO - Epoch(train)   [1][7550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:40:35  time: 0.3142  data_time: 0.0029  memory: 5226  loss: 1.6615  loss_cls: 1.0638  loss_bbox: 0.5978
+07/23 18:03:01 - mmengine - INFO - Epoch(train)   [1][7600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:40:12  time: 0.3218  data_time: 0.0029  memory: 5023  loss: 1.6173  loss_cls: 1.0151  loss_bbox: 0.6023
+07/23 18:03:17 - mmengine - INFO - Epoch(train)   [1][7650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:38:52  time: 0.3188  data_time: 0.0029  memory: 5536  loss: 1.6460  loss_cls: 1.0556  loss_bbox: 0.5903
+07/23 18:03:33 - mmengine - INFO - Epoch(train)   [1][7700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:30  time: 0.3155  data_time: 0.0029  memory: 5019  loss: 1.6275  loss_cls: 1.0370  loss_bbox: 0.5904
+07/23 18:03:49 - mmengine - INFO - Epoch(train)   [1][7750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:35:38  time: 0.3202  data_time: 0.0037  memory: 5035  loss: 1.6413  loss_cls: 1.0458  loss_bbox: 0.5955
+07/23 18:04:05 - mmengine - INFO - Epoch(train)   [1][7800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:36  time: 0.3260  data_time: 0.0029  memory: 5054  loss: 1.6468  loss_cls: 1.0399  loss_bbox: 0.6069
+07/23 18:04:21 - mmengine - INFO - Epoch(train)   [1][7850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:37:50  time: 0.3269  data_time: 0.0044  memory: 5766  loss: 1.6218  loss_cls: 1.0219  loss_bbox: 0.5999
+07/23 18:04:37 - mmengine - INFO - Epoch(train)   [1][7900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:08  time: 0.3175  data_time: 0.0032  memory: 5538  loss: 1.6087  loss_cls: 1.0150  loss_bbox: 0.5936
+07/23 18:04:54 - mmengine - INFO - Epoch(train)   [1][7950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:37:08  time: 0.3262  data_time: 0.0029  memory: 4861  loss: 1.5990  loss_cls: 1.0046  loss_bbox: 0.5944
+07/23 18:05:10 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:05:10 - mmengine - INFO - Epoch(train)   [1][8000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:37:37  time: 0.3245  data_time: 0.0029  memory: 5824  loss: 1.6190  loss_cls: 1.0200  loss_bbox: 0.5991
+07/23 18:05:26 - mmengine - INFO - Epoch(train)   [1][8050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:39:36  time: 0.3296  data_time: 0.0066  memory: 5482  loss: 1.6363  loss_cls: 1.0578  loss_bbox: 0.5785
+07/23 18:05:42 - mmengine - INFO - Epoch(train)   [1][8100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:39:08  time: 0.3215  data_time: 0.0049  memory: 5312  loss: 1.6539  loss_cls: 1.0554  loss_bbox: 0.5985
+07/23 18:05:58 - mmengine - INFO - Epoch(train)   [1][8150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:37:54  time: 0.3189  data_time: 0.0032  memory: 5066  loss: 1.6258  loss_cls: 1.0395  loss_bbox: 0.5863
+07/23 18:06:15 - mmengine - INFO - Epoch(train)   [1][8200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:38:56  time: 0.3265  data_time: 0.0168  memory: 5053  loss: 1.6431  loss_cls: 1.0549  loss_bbox: 0.5882
+07/23 18:06:31 - mmengine - INFO - Epoch(train)   [1][8250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:39:30  time: 0.3250  data_time: 0.0032  memory: 5306  loss: 1.6001  loss_cls: 1.0121  loss_bbox: 0.5881
+07/23 18:06:48 - mmengine - INFO - Epoch(train)   [1][8300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:41:45  time: 0.3308  data_time: 0.0031  memory: 4980  loss: 1.5893  loss_cls: 0.9976  loss_bbox: 0.5917
+07/23 18:07:03 - mmengine - INFO - Epoch(train)   [1][8350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:39:24  time: 0.3151  data_time: 0.0032  memory: 5326  loss: 1.5897  loss_cls: 1.0071  loss_bbox: 0.5826
+07/23 18:07:19 - mmengine - INFO - Epoch(train)   [1][8400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:38:30  time: 0.3200  data_time: 0.0029  memory: 4931  loss: 1.6499  loss_cls: 1.0577  loss_bbox: 0.5922
+07/23 18:07:36 - mmengine - INFO - Epoch(train)   [1][8450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:38:49  time: 0.3242  data_time: 0.0032  memory: 5472  loss: 1.6013  loss_cls: 1.0114  loss_bbox: 0.5899
+07/23 18:07:52 - mmengine - INFO - Epoch(train)   [1][8500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:37:34  time: 0.3188  data_time: 0.0052  memory: 5103  loss: 1.6298  loss_cls: 1.0342  loss_bbox: 0.5957
+07/23 18:08:08 - mmengine - INFO - Epoch(train)   [1][8550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:38:09  time: 0.3252  data_time: 0.0034  memory: 5180  loss: 1.6051  loss_cls: 1.0185  loss_bbox: 0.5866
+07/23 18:08:24 - mmengine - INFO - Epoch(train)   [1][8600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:58  time: 0.3190  data_time: 0.0029  memory: 5213  loss: 1.6311  loss_cls: 1.0448  loss_bbox: 0.5863
+07/23 18:08:40 - mmengine - INFO - Epoch(train)   [1][8650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:35:22  time: 0.3174  data_time: 0.0031  memory: 5945  loss: 1.6172  loss_cls: 1.0272  loss_bbox: 0.5900
+07/23 18:08:56 - mmengine - INFO - Epoch(train)   [1][8700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:34:19  time: 0.3194  data_time: 0.0038  memory: 4941  loss: 1.6354  loss_cls: 1.0464  loss_bbox: 0.5890
+07/23 18:09:12 - mmengine - INFO - Epoch(train)   [1][8750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:33:50  time: 0.3214  data_time: 0.0028  memory: 5326  loss: 1.6201  loss_cls: 1.0306  loss_bbox: 0.5895
+07/23 18:09:28 - mmengine - INFO - Epoch(train)   [1][8800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:00  time: 0.3309  data_time: 0.0030  memory: 5368  loss: 1.5950  loss_cls: 0.9969  loss_bbox: 0.5981
+07/23 18:09:44 - mmengine - INFO - Epoch(train)   [1][8850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:35:21  time: 0.3208  data_time: 0.0030  memory: 5169  loss: 1.6291  loss_cls: 1.0378  loss_bbox: 0.5913
+07/23 18:10:01 - mmengine - INFO - Epoch(train)   [1][8900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:11  time: 0.3262  data_time: 0.0039  memory: 4807  loss: 1.6254  loss_cls: 1.0306  loss_bbox: 0.5948
+07/23 18:10:16 - mmengine - INFO - Epoch(train)   [1][8950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:34:16  time: 0.3161  data_time: 0.0029  memory: 5555  loss: 1.6006  loss_cls: 1.0194  loss_bbox: 0.5812
+07/23 18:10:32 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:10:32 - mmengine - INFO - Epoch(train)   [1][9000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:33:49  time: 0.3215  data_time: 0.0029  memory: 5224  loss: 1.6016  loss_cls: 1.0115  loss_bbox: 0.5901
+07/23 18:10:49 - mmengine - INFO - Epoch(train)   [1][9050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:34:54  time: 0.3272  data_time: 0.0042  memory: 5577  loss: 1.5921  loss_cls: 0.9969  loss_bbox: 0.5952
+07/23 18:11:05 - mmengine - INFO - Epoch(train)   [1][9100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:34:14  time: 0.3207  data_time: 0.0029  memory: 5042  loss: 1.6078  loss_cls: 1.0182  loss_bbox: 0.5896
+07/23 18:11:22 - mmengine - INFO - Epoch(train)   [1][9150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:36:35  time: 0.3320  data_time: 0.0029  memory: 5358  loss: 1.5839  loss_cls: 0.9947  loss_bbox: 0.5892
+07/23 18:11:37 - mmengine - INFO - Epoch(train)   [1][9200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:33:14  time: 0.3106  data_time: 0.0030  memory: 4904  loss: 1.6194  loss_cls: 1.0430  loss_bbox: 0.5764
+07/23 18:11:53 - mmengine - INFO - Epoch(train)   [1][9250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:31:24  time: 0.3162  data_time: 0.0029  memory: 5136  loss: 1.6237  loss_cls: 1.0345  loss_bbox: 0.5892
+07/23 18:12:09 - mmengine - INFO - Epoch(train)   [1][9300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:30:54  time: 0.3213  data_time: 0.0045  memory: 5147  loss: 1.6272  loss_cls: 1.0351  loss_bbox: 0.5921
+07/23 18:12:25 - mmengine - INFO - Epoch(train)   [1][9350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:30:39  time: 0.3222  data_time: 0.0037  memory: 5253  loss: 1.5870  loss_cls: 1.0068  loss_bbox: 0.5802
+07/23 18:12:41 - mmengine - INFO - Epoch(train)   [1][9400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:29:42  time: 0.3195  data_time: 0.0030  memory: 5410  loss: 1.6355  loss_cls: 1.0481  loss_bbox: 0.5874
+07/23 18:12:57 - mmengine - INFO - Epoch(train)   [1][9450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:27:44  time: 0.3155  data_time: 0.0029  memory: 5782  loss: 1.5981  loss_cls: 1.0196  loss_bbox: 0.5785
+07/23 18:13:13 - mmengine - INFO - Epoch(train)   [1][9500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:26:01  time: 0.3164  data_time: 0.0030  memory: 5166  loss: 1.6041  loss_cls: 1.0240  loss_bbox: 0.5801
+07/23 18:13:29 - mmengine - INFO - Epoch(train)   [1][9550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:27:04  time: 0.3273  data_time: 0.0048  memory: 5208  loss: 1.6334  loss_cls: 1.0418  loss_bbox: 0.5917
+07/23 18:13:45 - mmengine - INFO - Epoch(train)   [1][9600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:25:53  time: 0.3184  data_time: 0.0029  memory: 5549  loss: 1.6229  loss_cls: 1.0370  loss_bbox: 0.5860
+07/23 18:14:02 - mmengine - INFO - Epoch(train)   [1][9650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:28:27  time: 0.3333  data_time: 0.0033  memory: 5136  loss: 1.6095  loss_cls: 1.0304  loss_bbox: 0.5791
+07/23 18:14:17 - mmengine - INFO - Epoch(train)   [1][9700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:26:02  time: 0.3136  data_time: 0.0032  memory: 5449  loss: 1.6049  loss_cls: 1.0314  loss_bbox: 0.5735
+07/23 18:14:33 - mmengine - INFO - Epoch(train)   [1][9750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:24:01  time: 0.3151  data_time: 0.0050  memory: 5050  loss: 1.6209  loss_cls: 1.0424  loss_bbox: 0.5785
+07/23 18:14:40 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:14:58 - mmengine - INFO - Epoch(train)   [2][  50/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:30:45  time: 0.3557  data_time: 0.0355  memory: 5402  loss: 1.6394  loss_cls: 1.0437  loss_bbox: 0.5957
+07/23 18:15:14 - mmengine - INFO - Epoch(train)   [2][ 100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:30:00  time: 0.3202  data_time: 0.0031  memory: 5219  loss: 1.6150  loss_cls: 1.0255  loss_bbox: 0.5895
+07/23 18:15:30 - mmengine - INFO - Epoch(train)   [2][ 150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:28:28  time: 0.3170  data_time: 0.0030  memory: 5335  loss: 1.5883  loss_cls: 1.0047  loss_bbox: 0.5836
+07/23 18:15:46 - mmengine - INFO - Epoch(train)   [2][ 200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:28:03  time: 0.3215  data_time: 0.0102  memory: 5050  loss: 1.6150  loss_cls: 1.0322  loss_bbox: 0.5828
+07/23 18:15:55 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:16:02 - mmengine - INFO - Epoch(train)   [2][ 250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:27:01  time: 0.3190  data_time: 0.0030  memory: 5125  loss: 1.6186  loss_cls: 1.0337  loss_bbox: 0.5849
+07/23 18:16:18 - mmengine - INFO - Epoch(train)   [2][ 300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:27:36  time: 0.3257  data_time: 0.0030  memory: 5256  loss: 1.6444  loss_cls: 1.0482  loss_bbox: 0.5962
+07/23 18:16:34 - mmengine - INFO - Epoch(train)   [2][ 350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:25:57  time: 0.3164  data_time: 0.0036  memory: 4883  loss: 1.6014  loss_cls: 1.0083  loss_bbox: 0.5931
+07/23 18:16:50 - mmengine - INFO - Epoch(train)   [2][ 400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:26:33  time: 0.3258  data_time: 0.0033  memory: 5207  loss: 1.6080  loss_cls: 1.0207  loss_bbox: 0.5873
+07/23 18:17:06 - mmengine - INFO - Epoch(train)   [2][ 450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:24:43  time: 0.3155  data_time: 0.0041  memory: 5084  loss: 1.6020  loss_cls: 1.0205  loss_bbox: 0.5815
+07/23 18:17:22 - mmengine - INFO - Epoch(train)   [2][ 500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:23:16  time: 0.3172  data_time: 0.0031  memory: 5231  loss: 1.6668  loss_cls: 1.0775  loss_bbox: 0.5893
+07/23 18:17:38 - mmengine - INFO - Epoch(train)   [2][ 550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:22:57  time: 0.3219  data_time: 0.0029  memory: 5098  loss: 1.5986  loss_cls: 1.0262  loss_bbox: 0.5724
+07/23 18:17:54 - mmengine - INFO - Epoch(train)   [2][ 600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:23:05  time: 0.3237  data_time: 0.0048  memory: 5007  loss: 1.5885  loss_cls: 1.0215  loss_bbox: 0.5670
+07/23 18:18:11 - mmengine - INFO - Epoch(train)   [2][ 650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:23:01  time: 0.3230  data_time: 0.0029  memory: 5266  loss: 1.5722  loss_cls: 0.9922  loss_bbox: 0.5799
+07/23 18:18:27 - mmengine - INFO - Epoch(train)   [2][ 700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:22:59  time: 0.3231  data_time: 0.0031  memory: 5401  loss: 1.5842  loss_cls: 1.0082  loss_bbox: 0.5760
+07/23 18:18:43 - mmengine - INFO - Epoch(train)   [2][ 750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:58  time: 0.3188  data_time: 0.0033  memory: 5346  loss: 1.5498  loss_cls: 0.9689  loss_bbox: 0.5809
+07/23 18:18:59 - mmengine - INFO - Epoch(train)   [2][ 800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:06  time: 0.3195  data_time: 0.0031  memory: 4831  loss: 1.6158  loss_cls: 1.0465  loss_bbox: 0.5694
+07/23 18:19:15 - mmengine - INFO - Epoch(train)   [2][ 850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:20:23  time: 0.3201  data_time: 0.0046  memory: 4975  loss: 1.6056  loss_cls: 1.0271  loss_bbox: 0.5785
+07/23 18:19:30 - mmengine - INFO - Epoch(train)   [2][ 900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:18:27  time: 0.3148  data_time: 0.0031  memory: 4971  loss: 1.5887  loss_cls: 1.0056  loss_bbox: 0.5831
+07/23 18:19:46 - mmengine - INFO - Epoch(train)   [2][ 950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:17:11  time: 0.3176  data_time: 0.0030  memory: 4846  loss: 1.5960  loss_cls: 1.0216  loss_bbox: 0.5743
+07/23 18:20:03 - mmengine - INFO - Epoch(train)   [2][1000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:20:08  time: 0.3363  data_time: 0.0030  memory: 5426  loss: 1.5705  loss_cls: 0.9916  loss_bbox: 0.5789
+07/23 18:20:20 - mmengine - INFO - Epoch(train)   [2][1050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:42  time: 0.3302  data_time: 0.0031  memory: 5633  loss: 1.5837  loss_cls: 1.0031  loss_bbox: 0.5806
+07/23 18:20:36 - mmengine - INFO - Epoch(train)   [2][1100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:10  time: 0.3209  data_time: 0.0034  memory: 5026  loss: 1.5998  loss_cls: 1.0261  loss_bbox: 0.5737
+07/23 18:20:52 - mmengine - INFO - Epoch(train)   [2][1150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:48  time: 0.3262  data_time: 0.0037  memory: 5540  loss: 1.5851  loss_cls: 1.0125  loss_bbox: 0.5727
+07/23 18:21:08 - mmengine - INFO - Epoch(train)   [2][1200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:21:10  time: 0.3204  data_time: 0.0029  memory: 5430  loss: 1.5834  loss_cls: 0.9974  loss_bbox: 0.5860
+07/23 18:21:17 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:21:24 - mmengine - INFO - Epoch(train)   [2][1250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:20:11  time: 0.3189  data_time: 0.0029  memory: 5337  loss: 1.6156  loss_cls: 1.0316  loss_bbox: 0.5841
+07/23 18:21:40 - mmengine - INFO - Epoch(train)   [2][1300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:18:30  time: 0.3157  data_time: 0.0030  memory: 5041  loss: 1.5901  loss_cls: 0.9943  loss_bbox: 0.5958
+07/23 18:21:56 - mmengine - INFO - Epoch(train)   [2][1350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:18:32  time: 0.3235  data_time: 0.0033  memory: 5187  loss: 1.6119  loss_cls: 1.0309  loss_bbox: 0.5810
+07/23 18:22:12 - mmengine - INFO - Epoch(train)   [2][1400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:19:48  time: 0.3291  data_time: 0.0043  memory: 5935  loss: 1.6086  loss_cls: 1.0248  loss_bbox: 0.5838
+07/23 18:22:28 - mmengine - INFO - Epoch(train)   [2][1450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:18:20  time: 0.3166  data_time: 0.0037  memory: 4968  loss: 1.6132  loss_cls: 1.0379  loss_bbox: 0.5753
+07/23 18:22:44 - mmengine - INFO - Epoch(train)   [2][1500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:17:18  time: 0.3185  data_time: 0.0032  memory: 5130  loss: 1.6013  loss_cls: 1.0268  loss_bbox: 0.5745
+07/23 18:23:00 - mmengine - INFO - Epoch(train)   [2][1550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:15:10  time: 0.3134  data_time: 0.0031  memory: 4965  loss: 1.6163  loss_cls: 1.0334  loss_bbox: 0.5829
+07/23 18:23:16 - mmengine - INFO - Epoch(train)   [2][1600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:15:07  time: 0.3230  data_time: 0.0033  memory: 5055  loss: 1.6035  loss_cls: 1.0229  loss_bbox: 0.5806
+07/23 18:23:32 - mmengine - INFO - Epoch(train)   [2][1650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:14:50  time: 0.3220  data_time: 0.0031  memory: 5044  loss: 1.6206  loss_cls: 1.0397  loss_bbox: 0.5809
+07/23 18:23:49 - mmengine - INFO - Epoch(train)   [2][1700/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:15:47  time: 0.3278  data_time: 0.0038  memory: 5602  loss: 1.6105  loss_cls: 1.0239  loss_bbox: 0.5866
+07/23 18:24:04 - mmengine - INFO - Epoch(train)   [2][1750/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:14:18  time: 0.3163  data_time: 0.0040  memory: 5090  loss: 1.5917  loss_cls: 1.0186  loss_bbox: 0.5731
+07/23 18:24:20 - mmengine - INFO - Epoch(train)   [2][1800/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:11:48  time: 0.3114  data_time: 0.0031  memory: 4883  loss: 1.6147  loss_cls: 1.0482  loss_bbox: 0.5665
+07/23 18:24:36 - mmengine - INFO - Epoch(train)   [2][1850/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:12:19  time: 0.3257  data_time: 0.0030  memory: 4970  loss: 1.5935  loss_cls: 1.0140  loss_bbox: 0.5795
+07/23 18:24:52 - mmengine - INFO - Epoch(train)   [2][1900/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:11:51  time: 0.3211  data_time: 0.0035  memory: 4852  loss: 1.5871  loss_cls: 1.0111  loss_bbox: 0.5760
+07/23 18:25:08 - mmengine - INFO - Epoch(train)   [2][1950/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:11:45  time: 0.3228  data_time: 0.0055  memory: 4984  loss: 1.5823  loss_cls: 1.0091  loss_bbox: 0.5732
+07/23 18:25:24 - mmengine - INFO - Epoch(train)   [2][2000/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:10:42  time: 0.3183  data_time: 0.0045  memory: 4862  loss: 1.5760  loss_cls: 0.9996  loss_bbox: 0.5765
+07/23 18:25:40 - mmengine - INFO - Epoch(train)   [2][2050/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:08:04  time: 0.3104  data_time: 0.0031  memory: 4810  loss: 1.6002  loss_cls: 1.0283  loss_bbox: 0.5719
+07/23 18:25:56 - mmengine - INFO - Epoch(train)   [2][2100/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:08:29  time: 0.3253  data_time: 0.0030  memory: 4997  loss: 1.5973  loss_cls: 1.0157  loss_bbox: 0.5816
+07/23 18:26:12 - mmengine - INFO - Epoch(train)   [2][2150/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:06:46  time: 0.3148  data_time: 0.0033  memory: 4788  loss: 1.5819  loss_cls: 0.9995  loss_bbox: 0.5824
+07/23 18:26:28 - mmengine - INFO - Epoch(train)   [2][2200/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:05:10  time: 0.3154  data_time: 0.0031  memory: 4941  loss: 1.5962  loss_cls: 1.0119  loss_bbox: 0.5843
+07/23 18:26:36 - mmengine - INFO - Exp name: rtmdet_tiny_8xb32-300e_coco_20230723_172047
+07/23 18:26:43 - mmengine - INFO - Epoch(train)   [2][2250/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:03:22  time: 0.3143  data_time: 0.0030  memory: 5246  loss: 1.6138  loss_cls: 1.0387  loss_bbox: 0.5751
+07/23 18:26:59 - mmengine - INFO - Epoch(train)   [2][2300/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:02:18  time: 0.3179  data_time: 0.0032  memory: 5065  loss: 1.5974  loss_cls: 1.0122  loss_bbox: 0.5852
+07/23 18:27:16 - mmengine - INFO - Epoch(train)   [2][2350/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:04:21  time: 0.3334  data_time: 0.0032  memory: 5137  loss: 1.5943  loss_cls: 1.0201  loss_bbox: 0.5741
+07/23 18:27:32 - mmengine - INFO - Epoch(train)   [2][2400/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:03:41  time: 0.3199  data_time: 0.0034  memory: 4927  loss: 1.5890  loss_cls: 1.0173  loss_bbox: 0.5718
+07/23 18:27:48 - mmengine - INFO - Epoch(train)   [2][2450/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:01:47  time: 0.3137  data_time: 0.0032  memory: 5194  loss: 1.6043  loss_cls: 1.0299  loss_bbox: 0.5744
+07/23 18:28:04 - mmengine - INFO - Epoch(train)   [2][2500/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:00:38  time: 0.3174  data_time: 0.0036  memory: 4888  loss: 1.5927  loss_cls: 1.0160  loss_bbox: 0.5767
+07/23 18:28:20 - mmengine - INFO - Epoch(train)   [2][2550/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:01:17  time: 0.3264  data_time: 0.0030  memory: 5452  loss: 1.5881  loss_cls: 1.0174  loss_bbox: 0.5707
+07/23 18:28:36 - mmengine - INFO - Epoch(train)   [2][2600/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:02:16  time: 0.3283  data_time: 0.0040  memory: 5285  loss: 1.5804  loss_cls: 1.0040  loss_bbox: 0.5764
+07/23 18:28:52 - mmengine - INFO - Epoch(train)   [2][2650/9773]  base_lr: 4.0000e-03 lr: 4.0000e-03  eta: 10 days, 21:01:57  time: 0.3216  data_time: 0.0031  memory: 4994  loss: 1.6015  loss_cls: 1.0260  loss_bbox: 0.5755

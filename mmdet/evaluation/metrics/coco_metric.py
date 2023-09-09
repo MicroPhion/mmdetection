@@ -349,6 +349,7 @@ class CocoMetric(BaseMetric):
             data_samples (Sequence[dict]): A batch of data samples that
                 contain annotations and predictions.
         """
+        pass
         for data_sample in data_samples:
             result = dict()
             pred = data_sample['pred_instances']
